@@ -1,19 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:system_auth/wrapper.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:system_auth/screens/authenticate/log_in.dart';
+import 'package:system_auth/screens/home/home.dart';
 
-void main() async{
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final FlutterSecureStorage storage = const FlutterSecureStorage();
+  String? accessToken = await storage.read(key: 'access_token');
+
+  runApp(MyApp(accessToken: accessToken));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final String? accessToken;
 
-  // This widget is the root of your application.
+  const MyApp({Key? key, this.accessToken}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Wrapper(),
+      home: accessToken != null ? const Home() : const LogIn(),
     );
   }
 }

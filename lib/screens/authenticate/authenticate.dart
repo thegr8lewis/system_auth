@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:system_auth/screens/authenticate/SignUpBackUp.dart';
 import 'package:system_auth/screens/authenticate/log_in.dart';
 import 'package:system_auth/screens/authenticate/sign_in.dart';
 
