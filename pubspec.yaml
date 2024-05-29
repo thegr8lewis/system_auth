@@ -21,6 +21,7 @@ dependencies:
   lottie: ^1.2.0
   http: ^1.2.1
   flutter_secure_storage: ^5.0.2
+  shared_preferences: ^2.2.3
 
 
 dev_dependencies:
@@ -31,6 +32,7 @@ dev_dependencies:
   lints: ^3.0.0
   test_api: 0.7.0  # Aligned with flutter_test constraint
   vm_service: 14.2.1  # Aligned with flutter_test constraint
+  loading_animation_widget: ^1.2.1
 
 flutter:
   uses-material-design: true
