@@ -11,7 +11,7 @@ class SignIn extends StatefulWidget {
   State<SignIn> createState() => _SignInState();
 }
 
-class _SignInState extends State<SignIn> {
+class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -19,7 +19,36 @@ class _SignInState extends State<SignIn> {
 
   bool _obscureText = true;
   bool _isSignUpButtonEnabled = false;
-  bool _isLoading = false; // Add this line
+  bool _isLoading = false;
+  String? _passwordMismatchMessage;
+
+  late AnimationController _animationController;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController.addListener(_validateForm);
+    _passwordController.addListener(_validateForm);
+    _confirmPasswordController.addListener(_validateForm);
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 100),
+    );
+
+    _animation = Tween<double>(begin: 1.0, end: 0.95).animate(_animationController);
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    _animationController.dispose();
+    super.dispose();
+  }
 
   void _togglePasswordVisibility() {
     setState(() {
@@ -32,12 +61,13 @@ class _SignInState extends State<SignIn> {
       _isSignUpButtonEnabled = _emailController.text.contains('@') &&
           _passwordController.text.length >= 6 &&
           _passwordController.text == _confirmPasswordController.text;
+      _passwordMismatchMessage = _passwordController.text != _confirmPasswordController.text ? 'Passwords don’t match' : null;
     });
   }
 
   Future<void> _signUp() async {
     setState(() {
-      _isLoading = true; // Show the loader
+      _isLoading = true;
     });
 
     final String username = _nameController.text;
@@ -45,13 +75,13 @@ class _SignInState extends State<SignIn> {
     final String password = _passwordController.text;
 
     final response = await http.post(
-      Uri.parse('https://cities-massive-surfing-collectables.trycloudflare.com/register'), // Adjust the URL as needed
+      Uri.parse('https://nr-pope-yard-cardiac.trycloudflare.com/register'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({'username': username, 'email': email, 'password': password}),
     );
 
     setState(() {
-      _isLoading = false; // Hide the loader
+      _isLoading = false;
     });
 
     if (response.statusCode == 201) {
@@ -81,23 +111,6 @@ class _SignInState extends State<SignIn> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    _emailController.addListener(_validateForm);
-    _passwordController.addListener(_validateForm);
-    _confirmPasswordController.addListener(_validateForm);
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
@@ -109,10 +122,6 @@ class _SignInState extends State<SignIn> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const SizedBox(height: 50),
-                  // Lottie.network(
-                  //   'https://lottie.host/b3398fd6-7d87-4f2d-9823-6f0c8a659591/d86LTtBMnG.json',
-                  //   height: 200,
-                  // ),
                   const SizedBox(height: 20),
                   const Text(
                     'SIGN UP',
@@ -182,15 +191,33 @@ class _SignInState extends State<SignIn> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: _isSignUpButtonEnabled ? _signUp : null,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.teal,
-                      padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 15),
-                      textStyle: const TextStyle(fontSize: 18),
+                  if (_passwordMismatchMessage != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Text(
+                        _passwordMismatchMessage!,
+                        style: const TextStyle(color: Colors.red),
+                      ),
                     ),
-                    child: const Text('Sign up'),
+                  const SizedBox(height: 20),
+                  ScaleTransition(
+                    scale: _animation,
+                    child: ElevatedButton(
+                      onPressed: _isSignUpButtonEnabled
+                          ? () {
+                        _animationController.forward().then((value) {
+                          _animationController.reverse();
+                          _signUp();
+                        });
+                      }
+                          : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.teal,
+                        padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 15),
+                        textStyle: const TextStyle(fontSize: 18),
+                      ),
+                      child: const Text('Sign up'),
+                    ),
                   ),
                   const SizedBox(height: 20),
                   TextButton(
@@ -209,6 +236,7 @@ class _SignInState extends State<SignIn> {
           ),
           if (_isLoading)
             Scaffold(
+              backgroundColor: Colors.black.withOpacity(0.5),
               body: Center(
                 child: LoadingAnimationWidget.staggeredDotsWave(
                   color: Colors.teal,
