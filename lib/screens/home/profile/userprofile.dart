@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:system_auth/screens/home/home.dart';
 
 class UserProfile extends StatefulWidget {
@@ -12,9 +13,11 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
+
   String? _name;
   String? _profileImageUrl;
-  String? _grade;
+  int? _grade;
   bool _isLoading = true;
   bool _hasError = false;
   String _errorMessage = '';
@@ -28,7 +31,15 @@ class _UserProfileState extends State<UserProfile> {
 
   Future<void> _fetchUserData() async {
     try {
-      final response = await http.get(Uri.parse('https://nominations-company-herbs-investments.trycloudflare.com/profile'));
+      final sessionCookie = await _storage.read(key: 'session_cookie');
+      final response = await http.get(
+        Uri.parse('https://tiffany-filtering-conflict-finest.trycloudflare.com/profile'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': sessionCookie ?? '',
+        },
+      );
+
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         setState(() {
@@ -53,19 +64,21 @@ class _UserProfileState extends State<UserProfile> {
     }
   }
 
-  Future<void> _updateProfile(String newName, String newGrade) async {
+  Future<void> _updateProfile(String newName, int newGrade) async {
+    final sessionCookie = await _storage.read(key: 'session_cookie');
     final response = await http.put(
-      Uri.parse('https://nominations-company-herbs-investments.trycloudflare.com/update'),
-      headers: <String, String>{
+      Uri.parse('https://tiffany-filtering-conflict-finest.trycloudflare.com/update'),
+      headers: {
         'Content-Type': 'application/json; charset=UTF-8',
+        'Cookie': sessionCookie ?? '',
       },
-      body: jsonEncode(<String, String>{
+      body: jsonEncode(<String, dynamic>{
         'username': newName,
         'grade': newGrade,
       }),
     );
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
       setState(() {
         _name = newName;
         _grade = newGrade;
@@ -84,7 +97,7 @@ class _UserProfileState extends State<UserProfile> {
 
   void _showUpdateDialog() {
     final TextEditingController nameController = TextEditingController(text: _name);
-    final TextEditingController gradeController = TextEditingController(text: _grade);
+    final TextEditingController gradeController = TextEditingController(text: _grade?.toString());
 
     showDialog(
       context: context,
@@ -124,8 +137,9 @@ class _UserProfileState extends State<UserProfile> {
                       setState(() {});
                     },
                     controller: gradeController,
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.person),
+                      prefixIcon: const Icon(Icons.school),
                       hintText: 'GRADE',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -173,7 +187,7 @@ class _UserProfileState extends State<UserProfile> {
                 ElevatedButton(
                   onPressed: nameController.text.isNotEmpty && gradeController.text.isNotEmpty
                       ? () {
-                    _updateProfile(nameController.text, gradeController.text);
+                    _updateProfile(nameController.text, int.parse(gradeController.text));
                   }
                       : null,
                   style: ElevatedButton.styleFrom(
@@ -262,7 +276,7 @@ class _UserProfileState extends State<UserProfile> {
               child: Column(
                 children: [
                   Text(
-                    'Grade: ${_grade ?? 'Loading...'}',
+                    _grade != null ? 'Grade: $_grade' : 'Loading...',
                     style: TextStyle(
                       fontSize: 18,
                       color: Colors.grey.shade700,

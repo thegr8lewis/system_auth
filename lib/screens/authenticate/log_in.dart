@@ -85,7 +85,7 @@ class _LoginScreenState extends State<LogIn> with SingleTickerProviderStateMixin
     final String password = _passwordController.text;
 
     final response = await http.post(
-      Uri.parse('https://nominations-company-herbs-investments.trycloudflare.com/login'),
+      Uri.parse('https://tiffany-filtering-conflict-finest.trycloudflare.com/login'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({
         'email': email,
@@ -144,7 +144,7 @@ class _LoginScreenState extends State<LogIn> with SingleTickerProviderStateMixin
   Future<void> _fetchUserData() async {
     try {
       final response = await http.get(
-        Uri.parse('https://nominations-company-herbs-investments.trycloudflare.com/profile'),
+        Uri.parse('https://tiffany-filtering-conflict-finest.trycloudflare.com/profile'),
         headers: {
           'Content-Type': 'application/json',
           'Cookie': _sessionCookie ?? (await _storage.read(key: 'session_cookie'))!,
