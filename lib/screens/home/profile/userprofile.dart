@@ -77,7 +77,7 @@ class _UserProfileState extends State<UserProfile> {
       );
     } else {
       setState(() {
-        _updateErrorMessage = 'Failedd to update';
+        _updateErrorMessage = 'Failed to update';
       });
     }
   }
