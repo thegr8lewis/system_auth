@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:system_auth/screens/authenticate/log_in.dart';
 import 'package:system_auth/screens/home/home.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({super.key});
@@ -33,7 +34,7 @@ class _UserProfileState extends State<UserProfile> {
     try {
       final sessionCookie = await _storage.read(key: 'session_cookie');
       final response = await http.get(
-        Uri.parse('https://tiffany-filtering-conflict-finest.trycloudflare.com/profile'),
+        Uri.parse('https://hearings-critics-start-deemed.trycloudflare.com/profile'),
         headers: {
           'Content-Type': 'application/json',
           'Cookie': sessionCookie ?? '',
@@ -67,7 +68,7 @@ class _UserProfileState extends State<UserProfile> {
   Future<void> _updateProfile(String newName, int newGrade) async {
     final sessionCookie = await _storage.read(key: 'session_cookie');
     final response = await http.put(
-      Uri.parse('https://tiffany-filtering-conflict-finest.trycloudflare.com/update'),
+      Uri.parse('https://hearings-critics-start-deemed.trycloudflare.com/update'),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
         'Cookie': sessionCookie ?? '',
@@ -84,6 +85,7 @@ class _UserProfileState extends State<UserProfile> {
         _grade = newGrade;
         _updateErrorMessage = '';
       });
+      Navigator.pop(context);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const UserProfile()),
@@ -95,126 +97,193 @@ class _UserProfileState extends State<UserProfile> {
     }
   }
 
-  void _showUpdateDialog() {
-    final TextEditingController nameController = TextEditingController(text: _name);
-    final TextEditingController gradeController = TextEditingController(text: _grade?.toString());
+  Future<void> _deleteProfile() async {
+    final sessionCookie = await _storage.read(key: 'session_cookie');
+    final response = await http.delete(
+      Uri.parse('https://hearings-critics-start-deemed.trycloudflare.com/delete'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Cookie': sessionCookie ?? '',
+      },
+    );
 
+    if (response.statusCode == 200) {
+      // Profile successfully deleted, navigate to home screen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LogIn()),
+      );
+    } else {
+      setState(() {
+        _updateErrorMessage = 'Failed to delete profile';
+      });
+    }
+  }
+
+  void _showDeleteConfirmationDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete Profile'),
+          content: const Text('Are you sure you want to delete your profile? This action cannot be undone.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _deleteProfile();
+              },
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showUpdateDialog() {
+    final TextEditingController nameController = TextEditingController(text: _name);
+    final TextEditingController gradeController = TextEditingController(text: _grade?.toString());
+    bool isUpdating = false;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setState) {
-            return AlertDialog(
-              title: const Text('Update Your Details'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    onChanged: (value) {
-                      setState(() {});
-                    },
-                    controller: nameController,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.person_outline_outlined),
-                      hintText: 'Name',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: const BorderSide(
-                          color: Colors.grey,
+            return Stack(
+              children: [
+                AlertDialog(
+                  title: const Text('Update Your Details'),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextField(
+                        onChanged: (value) {
+                          setState(() {});
+                        },
+                        controller: nameController,
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.person_outline_outlined),
+                          hintText: 'Name',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(
+                              color: Colors.grey,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(
+                              color: Colors.green,
+                            ),
+                          ),
                         ),
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: const BorderSide(
-                          color: Colors.green,
+                      const SizedBox(height: 20),
+                      TextField(
+                        onChanged: (value) {
+                          setState(() {});
+                        },
+                        controller: gradeController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.school),
+                          hintText: 'GRADE',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(
+                              color: Colors.grey,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(
+                              color: Colors.green,
+                            ),
+                          ),
+                        ),
+                      ),
+                      if (_updateErrorMessage.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            _updateErrorMessage,
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        ),
+                    ],
+                  ),
+                  actions: <Widget>[
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blueAccent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  TextField(
-                    onChanged: (value) {
-                      setState(() {});
-                    },
-                    controller: gradeController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.school),
-                      hintText: 'GRADE',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: const BorderSide(
-                          color: Colors.grey,
+                    ElevatedButton(
+                      onPressed: nameController.text.isNotEmpty && gradeController.text.isNotEmpty && !isUpdating
+                          ? () async {
+                        setState(() {
+                          isUpdating = true;
+                        });
+                        await _updateProfile(nameController.text, int.parse(gradeController.text));
+                        setState(() {
+                          isUpdating = false;
+                        });
+                      }
+                          : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: const BorderSide(
-                          color: Colors.green,
+                      child: const Text(
+                        'OK',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                  ),
-                  if (_updateErrorMessage.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Text(
-                        _updateErrorMessage,
-                        style: const TextStyle(color: Colors.red),
-                      ),
-                    ),
-                ],
-              ),
-              actions: <Widget>[
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blueAccent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text(
-                    'Cancel',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  ],
                 ),
-                ElevatedButton(
-                  onPressed: nameController.text.isNotEmpty && gradeController.text.isNotEmpty
-                      ? () {
-                    _updateProfile(nameController.text, int.parse(gradeController.text));
-                  }
-                      : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                if (isUpdating)
+                  Container(
+                    color: Colors.black.withOpacity(0.5),
+                    child: Center(
+                      child: LoadingAnimationWidget.staggeredDotsWave(
+                        color: Colors.teal,
+                        size: 100,
+                      ),
                     ),
                   ),
-                  child: const Text(
-                    'OK',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
               ],
             );
           },
         );
       },
     );
-  }
-
-  void _deleteProfile() {
-    // Implement the delete profile logic here
-    // You might want to show a confirmation dialog before deleting the profile
   }
 
   @override
@@ -253,11 +322,15 @@ class _UserProfileState extends State<UserProfile> {
             Center(
               child: CircleAvatar(
                 radius: 60,
-                backgroundImage: _profileImageUrl != null
-                    ? NetworkImage(_profileImageUrl!)
-                    : null,
-                child: _profileImageUrl == null
-                    ? const Icon(Icons.person, size: 60)
+                backgroundColor: Colors.grey.shade200,
+                child: _profileImageUrl != null
+                    ? Text(
+                  _name?.substring(0, 2).toUpperCase() ?? '',
+                  style: const TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold,
+                  ),
+                )
                     : null,
               ),
             ),
@@ -323,7 +396,7 @@ class _UserProfileState extends State<UserProfile> {
               child: SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _deleteProfile,
+                  onPressed: _showDeleteConfirmationDialog,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blueAccent,
                     shape: RoundedRectangleBorder(

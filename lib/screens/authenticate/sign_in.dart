@@ -75,7 +75,7 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
     final String password = _passwordController.text;
 
     final response = await http.post(
-      Uri.parse('https://nominations-company-herbs-investments.trycloudflare.com/register'),
+      Uri.parse('https://hearings-critics-start-deemed.trycloudflare.com/register'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({'username': username, 'email': email, 'password': password}),
     );
