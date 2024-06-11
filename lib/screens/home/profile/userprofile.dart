@@ -28,7 +28,7 @@ class _UserProfileState extends State<UserProfile> {
 
   Future<void> _fetchUserData() async {
     try {
-      final response = await http.get(Uri.parse('https://nr-pope-yard-cardiac.trycloudflare.com/profile'));
+      final response = await http.get(Uri.parse('https://nominations-company-herbs-investments.trycloudflare.com/profile'));
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         setState(() {
@@ -55,7 +55,7 @@ class _UserProfileState extends State<UserProfile> {
 
   Future<void> _updateProfile(String newName, String newGrade) async {
     final response = await http.put(
-      Uri.parse('https://nr-pope-yard-cardiac.trycloudflare.com/update'),
+      Uri.parse('https://nominations-company-herbs-investments.trycloudflare.com/update'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

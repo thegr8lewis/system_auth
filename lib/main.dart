@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: accessToken != null ? const Home() : const LogIn(),
+      home: accessToken != null ? const Home() : LogIn(),
     );
   }
 }

@@ -42,7 +42,7 @@ class _ForgotPassState extends State<ForgotPass> {
     final String email = _emailController.text;
 
     final response = await http.post(
-      Uri.parse('https://nr-pope-yard-cardiac.trycloudflare.com/forgot'), // Adjust the URL as needed
+      Uri.parse('https://nominations-company-herbs-investments.trycloudflare.com/forgot'), // Adjust the URL as needed
       headers: {'Content-Type': 'application/json'},
       body: json.encode({ 'email': email}),
     );

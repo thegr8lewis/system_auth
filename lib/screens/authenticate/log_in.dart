@@ -85,7 +85,7 @@ class _LoginScreenState extends State<LogIn> with SingleTickerProviderStateMixin
     final String password = _passwordController.text;
 
     final response = await http.post(
-      Uri.parse('https://nr-pope-yard-cardiac.trycloudflare.com/login'),
+      Uri.parse('https://nominations-company-herbs-investments.trycloudflare.com/login'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({
         'email': email,
@@ -101,14 +101,14 @@ class _LoginScreenState extends State<LogIn> with SingleTickerProviderStateMixin
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
 
-      // Extract the session cookie from the response headers
-      final cookies = response.headers['set-cookie'];
-      if (cookies != null) {
-        _sessionCookie = cookies;
-        await _storage.write(key: 'session_cookie', value: cookies);
-      }
-
+      // Extract the session cookie from the response headers if remember me is true
       if (_rememberMe) {
+        final cookies = response.headers['set-cookie'];
+        if (cookies != null) {
+          _sessionCookie = cookies;
+          await _storage.write(key: 'session_cookie', value: cookies);
+        }
+
         await _storage.write(key: 'remember_me', value: 'true');
         await _storage.write(key: 'email', value: email);
       } else {
@@ -144,7 +144,7 @@ class _LoginScreenState extends State<LogIn> with SingleTickerProviderStateMixin
   Future<void> _fetchUserData() async {
     try {
       final response = await http.get(
-        Uri.parse('https://nr-pope-yard-cardiac.trycloudflare.com/profile'),
+        Uri.parse('https://nominations-company-herbs-investments.trycloudflare.com/profile'),
         headers: {
           'Content-Type': 'application/json',
           'Cookie': _sessionCookie ?? (await _storage.read(key: 'session_cookie'))!,
