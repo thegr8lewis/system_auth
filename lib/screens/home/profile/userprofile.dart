@@ -115,7 +115,7 @@ class _UserProfileState extends State<UserProfile> {
       );
     } else {
       setState(() {
-        _updateErrorMessage = 'Failed to delete profile';
+        _updateErrorMessage = 'Failed to delete Profile';
       });
     }
   }
