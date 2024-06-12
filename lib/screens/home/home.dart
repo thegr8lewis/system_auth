@@ -197,7 +197,7 @@ class ApiService {
         List jsonResponse = json.decode(response.body);
         return jsonResponse.map((subject) => Subject.fromJson(subject)).toList();
       } else {
-        throw Exception('Failed to fetch subjects');
+        throw Exception('Failedd to fetch subjects');
       }
     }
   }
