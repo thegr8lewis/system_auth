@@ -34,7 +34,7 @@ class _UserProfileState extends State<UserProfile> {
     try {
       final sessionCookie = await _storage.read(key: 'session_cookie');
       final response = await http.get(
-        Uri.parse('https://hearings-critics-start-deemed.trycloudflare.com/profile'),
+        Uri.parse('https://angle-hd-selective-sofa.trycloudflare.com/profile'),
         headers: {
           'Content-Type': 'application/json',
           'Cookie': sessionCookie ?? '',
@@ -68,7 +68,7 @@ class _UserProfileState extends State<UserProfile> {
   Future<void> _updateProfile(String newName, int newGrade) async {
     final sessionCookie = await _storage.read(key: 'session_cookie');
     final response = await http.put(
-      Uri.parse('https://hearings-critics-start-deemed.trycloudflare.com/update'),
+      Uri.parse('https://angle-hd-selective-sofa.trycloudflare.com/update'),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
         'Cookie': sessionCookie ?? '',
@@ -100,7 +100,7 @@ class _UserProfileState extends State<UserProfile> {
   Future<void> _deleteProfile() async {
     final sessionCookie = await _storage.read(key: 'session_cookie');
     final response = await http.delete(
-      Uri.parse('https://hearings-critics-start-deemed.trycloudflare.com/delete'),
+      Uri.parse('https://angle-hd-selective-sofa.trycloudflare.com/delete'),
       headers: {
         'Content-Type': 'application/json',
         'Cookie': sessionCookie ?? '',
@@ -295,7 +295,7 @@ class _UserProfileState extends State<UserProfile> {
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const Home()),
+              MaterialPageRoute(builder: (context) =>  HomePage()),
             );
           },
         ),

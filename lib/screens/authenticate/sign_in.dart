@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:system_auth/screens/authenticate/grade.dart';
 import 'dart:convert';
 import 'package:system_auth/screens/authenticate/log_in.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:system_auth/screens/home/home.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({Key? key}) : super(key: key);
@@ -75,7 +77,7 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
     final String password = _passwordController.text;
 
     final response = await http.post(
-      Uri.parse('https://hearings-critics-start-deemed.trycloudflare.com/register'),
+      Uri.parse('https://angle-hd-selective-sofa.trycloudflare.com/register'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({'username': username, 'email': email, 'password': password}),
     );
@@ -87,7 +89,7 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
     if (response.statusCode == 201) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const LogIn()),
+        MaterialPageRoute(builder: (context) => const GradePage()),
       );
     } else {
       showDialog(

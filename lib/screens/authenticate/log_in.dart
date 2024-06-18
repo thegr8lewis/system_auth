@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:system_auth/screens/authenticate/forgot_pass.dart';
+import 'package:system_auth/screens/authenticate/grade.dart';
 import 'package:system_auth/screens/authenticate/sign_in.dart';
 import 'package:system_auth/screens/home/home.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -85,7 +86,7 @@ class _LoginScreenState extends State<LogIn> with SingleTickerProviderStateMixin
     final String password = _passwordController.text;
 
     final response = await http.post(
-      Uri.parse('https://hearings-critics-start-deemed.trycloudflare.com/login'),
+      Uri.parse('https://angle-hd-selective-sofa.trycloudflare.com/login'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({
         'email': email,
@@ -118,7 +119,7 @@ class _LoginScreenState extends State<LogIn> with SingleTickerProviderStateMixin
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const Home()),
+        MaterialPageRoute(builder: (context) =>  const HomePage()),
       );
     } else {
       showDialog(
@@ -144,7 +145,7 @@ class _LoginScreenState extends State<LogIn> with SingleTickerProviderStateMixin
   Future<void> _fetchUserData() async {
     try {
       final response = await http.get(
-        Uri.parse('https://hearings-critics-start-deemed.trycloudflare.com/profile'),
+        Uri.parse('https://angle-hd-selective-sofa.trycloudflare.com/profile'),
         headers: {
           'Content-Type': 'application/json',
           'Cookie': _sessionCookie ?? (await _storage.read(key: 'session_cookie'))!,
