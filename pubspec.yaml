@@ -6,7 +6,7 @@ version: 1.0.0+1
 
 environment:
   sdk: '>=3.4.0 <4.0.0'
- # flutter: ">=3.7.0 <4.0.0"
+  flutter: ">=3.7.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -34,15 +34,12 @@ dev_dependencies:
   vm_service: 14.2.1  # Aligned with flutter_test constraint
   loading_animation_widget: ^1.2.1
 
+
 flutter:
   uses-material-design: true
 
-
-  # Uncomment and add assets if needed
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
-
+#  assets:
+#    - images/profileP.jpg
   # Uncomment and add fonts if needed
   # fonts:
   #   - family: Schyler
