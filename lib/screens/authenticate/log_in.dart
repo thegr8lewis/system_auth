@@ -8,6 +8,8 @@ import 'package:system_auth/screens/authenticate/sign_in.dart';
 import 'package:system_auth/screens/home/home.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
+import '../../config.dart';
+
 class LogIn extends StatefulWidget {
   const LogIn({Key? key}) : super(key: key);
 
@@ -86,7 +88,7 @@ class _LoginScreenState extends State<LogIn> with SingleTickerProviderStateMixin
     final String password = _passwordController.text;
 
     final response = await http.post(
-      Uri.parse('https://angle-hd-selective-sofa.trycloudflare.com/login'),
+      Uri.parse('$BASE_URL/login'),
       headers: {'Content-Type': 'application/json'},
       body: json.encode({
         'email': email,
@@ -145,7 +147,7 @@ class _LoginScreenState extends State<LogIn> with SingleTickerProviderStateMixin
   Future<void> _fetchUserData() async {
     try {
       final response = await http.get(
-        Uri.parse('https://angle-hd-selective-sofa.trycloudflare.com/profile'),
+        Uri.parse('$BASE_URL/profile'),
         headers: {
           'Content-Type': 'application/json',
           'Cookie': _sessionCookie ?? (await _storage.read(key: 'session_cookie'))!,

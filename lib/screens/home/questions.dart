@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import '../../config.dart';
+
 
 class QuestionsPage extends StatefulWidget {
   final int topicId;
@@ -23,7 +25,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
   }
 
   fetchQuestions() async {
-    final response = await http.get(Uri.parse('https://angle-hd-selective-sofa.trycloudflare.com/${widget.topicId}/questions'));
+    final response = await http.get(Uri.parse('$BASE_URL/${widget.topicId}/questions'));
     if (response.statusCode == 200) {
       setState(() {
         questions = json.decode(response.body);

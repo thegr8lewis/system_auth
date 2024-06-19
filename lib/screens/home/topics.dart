@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:system_auth/screens/home/questions.dart';
 
+import '../../config.dart';
+
 class TopicsPage extends StatefulWidget {
   final int subjectId;
   final String subjectName;
@@ -23,7 +25,7 @@ class _TopicsPageState extends State<TopicsPage> {
   }
 
   fetchTopics() async {
-    final response = await http.get(Uri.parse('https://angle-hd-selective-sofa.trycloudflare.com/${widget.subjectId}/topics'));
+    final response = await http.get(Uri.parse('$BASE_URL/${widget.subjectId}/topics'));
     if (response.statusCode == 200) {
       setState(() {
         topics = json.decode(response.body);

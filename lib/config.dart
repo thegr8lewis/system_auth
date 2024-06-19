@@ -1,0 +1,1 @@
+final String BASE_URL='https://cv-suse-follow-producer.trycloudflare.com';

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:system_auth/screens/home/home.dart';
+import '../../config.dart';
 
 void main() {
   runApp(const MaterialApp(
@@ -20,20 +21,14 @@ class GradePage extends StatefulWidget {
 class _GradePageState extends State<GradePage> {
   int? _currentGrade;
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
-  static const String _baseUrl = 'https://angle-hd-selective-sofa.trycloudflare.com';
 
-  void sendDataToDatabase(int? grade) async {
-    if (grade == null) return; // Handle null case gracefully
+  Future<void> sendDataToDatabase(int? grade) async {
+    final sessionCookie = await _storage.read(key: 'session_cookie');
 
-    var url = Uri.parse('$_baseUrl/grade');
-
-    var headers = <String, String>{
+    final url = Uri.parse('$BASE_URL/grade');
+    final headers = <String, String>{
       'Content-Type': 'application/json',
     };
-
-    var body = jsonEncode({
-      'grade': grade,
-    });
 
     try {
       final sessionCookie = await _storage.read(key: 'session_cookie');
@@ -44,6 +39,10 @@ class _GradePageState extends State<GradePage> {
       }
 
       headers['Cookie'] = sessionCookie;
+
+      var body = jsonEncode({
+        'grade': grade,
+      });
 
       var response = await http.put(url, headers: headers, body: body);
 
@@ -111,18 +110,20 @@ class _GradePageState extends State<GradePage> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(9, (index) => GradeOption(
-              grade: index + 1,
-              currentGrade: _currentGrade,
-              onChanged: (value) {
-                setState(() {
-                  _currentGrade = value;
-                });
-                sendDataToDatabase(value); // Update database on grade change
-              },
-            )),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(9, (index) => GradeOption(
+                grade: index + 1,
+                currentGrade: _currentGrade,
+                onChanged: (value) {
+                  setState(() {
+                    _currentGrade = value;
+                  });
+                  sendDataToDatabase(value); // Update database on grade change
+                },
+              )),
+            ),
           ),
         ),
       ),

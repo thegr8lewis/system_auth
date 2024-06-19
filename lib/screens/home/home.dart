@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:lottie/lottie.dart';
+import 'package:system_auth/config.dart';
 import 'package:system_auth/screens/home/topics.dart';
 import 'package:system_auth/screens/home/profile/userprofile.dart';
 
@@ -10,7 +12,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,7 @@ class MyApp extends StatelessWidget {
 }
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -34,7 +36,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late Future<List<Subject>> _subjectsFuture;
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
-  static const String _baseUrl = 'https://angle-hd-selective-sofa.trycloudflare.com';
 
   @override
   void initState() {
@@ -50,7 +51,7 @@ class _HomePageState extends State<HomePage> {
       }
 
       final response = await http.get(
-        Uri.parse('$_baseUrl/subjects'),
+        Uri.parse('$BASE_URL/subjects'),
         headers: {
           'Content-Type': 'application/json',
           'Cookie': sessionCookie,
@@ -58,15 +59,12 @@ class _HomePageState extends State<HomePage> {
       );
 
       if (response.statusCode == 200) {
-        print('Response body: ${response.body}');
         List<dynamic> body = json.decode(response.body);
         return body.map((dynamic item) => Subject.fromJson(item)).toList();
       } else {
-        print('Failed to load subjects. Response body: ${response.body}');
         throw Exception('Failed to load subjects. Status code: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error fetching subjects: $e');
       throw Exception('Error fetching subjects: $e');
     }
   }
@@ -91,39 +89,90 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: FutureBuilder<List<Subject>>(
-        future: _subjectsFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No subjects available.'));
-          } else {
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                var subject = snapshot.data![index];
-                return ListTile(
-                  title: Text(subject.name),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => TopicsPage(
-                          subjectId: subject.id,
-                          subjectName: subject.name,
-                        ),
-                      ),
+      body: Column(
+        children: [
+          _buildLoadingView(), // Always show the Lottie animation at the top
+          Expanded(
+            child: FutureBuilder<List<Subject>>(
+              future: _subjectsFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Container(); // Do not show anything if waiting
+                } else if (snapshot.hasError) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Error: ${snapshot.error}')),
                     );
-                  },
+                  });
+                  return _buildErrorView();
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(child: Text('No subjects available.'));
+                } else {
+                  return _buildSubjectsList(snapshot.data!);
+                }
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoadingView() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Lottie.network(
+          'https://lottie.host/b3398fd6-7d87-4f2d-9823-6f0c8a659591/d86LTtBMnG.json',
+          height: 200,
+        ),
+        const SizedBox(height: 20),
+
+      ],
+    );
+  }
+
+  Widget _buildErrorView() {
+    return const Center(child: Text('An error occurred. Please try again.'));
+  }
+
+  Widget _buildSubjectsList(List<Subject> subjects) {
+    return ListView.builder(
+      itemCount: subjects.length,
+      itemBuilder: (context, index) {
+        var subject = subjects[index];
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            elevation: 2,
+            child: ListTile(
+              title: Text(
+                subject.name,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              subtitle: LinearProgressIndicator(
+                value: subject.grade / 100, // Adjust according to your grade data
+                backgroundColor: Colors.grey[200],
+                valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TopicsPage(
+                      subjectId: subject.id,
+                      subjectName: subject.name,
+                    ),
+                  ),
                 );
               },
-            );
-          }
-        },
-      ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

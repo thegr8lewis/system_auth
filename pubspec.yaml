@@ -19,9 +19,11 @@ dependencies:
   material_color_utilities: ^0.8.0
   meta: ^1.12.0
   lottie: ^1.2.0
+  flutter_tts: ^3.0.1
   http: ^1.2.1
   flutter_secure_storage: ^5.0.2
   shared_preferences: ^2.2.3
+  flutter_dotenv: ^5.1.0
 
 
 dev_dependencies:
@@ -38,8 +40,8 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-#  assets:
-#    - images/profileP.jpg
+  assets:
+    - assets/.env
   # Uncomment and add fonts if needed
   # fonts:
   #   - family: Schyler
