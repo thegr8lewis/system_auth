@@ -119,16 +119,21 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildLoadingView() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Lottie.network(
-          'https://lottie.host/b3398fd6-7d87-4f2d-9823-6f0c8a659591/d86LTtBMnG.json',
-          height: 200,
-        ),
-        const SizedBox(height: 20),
-
-      ],
+    return Container(
+      height: 220, // Adjust height to fit the animation and text
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 16.0), // Adjust the padding to your needs
+            child: Lottie.network(
+              'https://lottie.host/87997b7c-46c7-4168-a524-c25961818aa7/wOv6KaTfF0.json',
+              height: 150,
+            ),
+          ),
+          const SizedBox(width: 20),
+        ],
+      ),
     );
   }
 

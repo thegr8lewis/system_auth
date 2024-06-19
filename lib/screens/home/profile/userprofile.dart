@@ -288,6 +288,14 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
+  Future<void> _logOut() async {
+    await _storage.delete(key: 'session_cookie');
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const LogIn()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -384,6 +392,29 @@ class _UserProfileState extends State<UserProfile> {
                   ),
                   child: const Text(
                     'Update Details',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _logOut,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.redAccent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: const Text(
+                    'Log Out',
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,

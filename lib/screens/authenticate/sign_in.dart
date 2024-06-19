@@ -62,6 +62,11 @@ class _SignInState extends State<SignIn> {
 
     if (response.statusCode == 201) {
       final data = json.decode(response.body);
+
+      // Clear any existing session data
+      await _storage.deleteAll();
+
+      // Store new session data
       await _storage.write(key: 'access_token', value: data['access_token']);
 
       Navigator.pushReplacement(
