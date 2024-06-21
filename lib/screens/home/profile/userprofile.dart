@@ -6,6 +6,8 @@ import 'package:system_auth/screens/authenticate/log_in.dart';
 import 'package:system_auth/screens/home/home.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
+import '../../../config.dart';
+
 class UserProfile extends StatefulWidget {
   const UserProfile({super.key});
 
@@ -34,7 +36,7 @@ class _UserProfileState extends State<UserProfile> {
     try {
       final sessionCookie = await _storage.read(key: 'session_cookie');
       final response = await http.get(
-        Uri.parse('https://angle-hd-selective-sofa.trycloudflare.com/profile'),
+        Uri.parse('$BASE_URL/profile'),
         headers: {
           'Content-Type': 'application/json',
           'Cookie': sessionCookie ?? '',
@@ -68,7 +70,7 @@ class _UserProfileState extends State<UserProfile> {
   Future<void> _updateProfile(String newName, int newGrade) async {
     final sessionCookie = await _storage.read(key: 'session_cookie');
     final response = await http.put(
-      Uri.parse('https://angle-hd-selective-sofa.trycloudflare.com/update'),
+      Uri.parse('$BASE_URL/update'),
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
         'Cookie': sessionCookie ?? '',
@@ -100,7 +102,7 @@ class _UserProfileState extends State<UserProfile> {
   Future<void> _deleteProfile() async {
     final sessionCookie = await _storage.read(key: 'session_cookie');
     final response = await http.delete(
-      Uri.parse('https://angle-hd-selective-sofa.trycloudflare.com/delete'),
+      Uri.parse('$BASE_URL/delete'),
       headers: {
         'Content-Type': 'application/json',
         'Cookie': sessionCookie ?? '',
@@ -286,6 +288,14 @@ class _UserProfileState extends State<UserProfile> {
     );
   }
 
+  Future<void> _logOut() async {
+    await _storage.delete(key: 'session_cookie');
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const LogIn()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -382,6 +392,29 @@ class _UserProfileState extends State<UserProfile> {
                   ),
                   child: const Text(
                     'Update Details',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _logOut,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.redAccent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: const Text(
+                    'Log Out',
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,

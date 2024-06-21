@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:system_auth/screens/home/questions.dart';
+
+import '../../config.dart';
+import 'questions.dart';
 
 class TopicsPage extends StatefulWidget {
   final int subjectId;
@@ -15,6 +17,7 @@ class TopicsPage extends StatefulWidget {
 
 class _TopicsPageState extends State<TopicsPage> {
   List topics = [];
+  int? selectedTopicIndex; // Track the index of the selected topic
 
   @override
   void initState() {
@@ -23,7 +26,7 @@ class _TopicsPageState extends State<TopicsPage> {
   }
 
   fetchTopics() async {
-    final response = await http.get(Uri.parse('https://angle-hd-selective-sofa.trycloudflare.com/${widget.subjectId}/topics'));
+    final response = await http.get(Uri.parse('$BASE_URL/${widget.subjectId}/topics'));
     if (response.statusCode == 200) {
       setState(() {
         topics = json.decode(response.body);
@@ -42,19 +45,39 @@ class _TopicsPageState extends State<TopicsPage> {
       body: ListView.builder(
         itemCount: topics.length,
         itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(topics[index]['name']),
+          var topic = topics[index];
+          var topicName = topic['topic_name'] ?? 'Unnamed Topic';
+          bool isSelected = index == selectedTopicIndex; // Check if this topic is selected
+          return GestureDetector(
             onTap: () {
+              setState(() {
+                selectedTopicIndex = index; // Update the selected topic index
+              });
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => QuestionsPage(
-                    topicId: topics[index]['id'],
-                    topicName: topics[index]['name'],
+                    topicId: topic['id'],
+                    topicName: topicName,
                   ),
                 ),
               );
             },
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              elevation: 4,
+              margin: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              color: isSelected ? Colors.grey[200] : Colors.white, // Change color based on selection
+              child: ListTile(
+                contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                title: Text(
+                  topicName,
+                  style: TextStyle(fontSize: 18),
+                ),
+              ),
+            ),
           );
         },
       ),

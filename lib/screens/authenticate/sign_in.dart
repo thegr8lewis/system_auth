@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:system_auth/screens/authenticate/grade.dart';
+import 'package:system_auth/config.dart'; // Make sure your BASE_URL is defined here
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:system_auth/screens/authenticate/grade.dart';
 import 'package:system_auth/screens/authenticate/log_in.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:system_auth/screens/home/home.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({Key? key}) : super(key: key);
@@ -13,44 +15,17 @@ class SignIn extends StatefulWidget {
   State<SignIn> createState() => _SignInState();
 }
 
-class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
+class _SignInState extends State<SignIn> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
 
+  final _storage = const FlutterSecureStorage(); // Initialize the secure storage
+
   bool _obscureText = true;
   bool _isSignUpButtonEnabled = false;
   bool _isLoading = false;
-  String? _passwordMismatchMessage;
-
-  late AnimationController _animationController;
-  late Animation<double> _animation;
-
-  @override
-  void initState() {
-    super.initState();
-    _emailController.addListener(_validateForm);
-    _passwordController.addListener(_validateForm);
-    _confirmPasswordController.addListener(_validateForm);
-
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 100),
-    );
-
-    _animation = Tween<double>(begin: 1.0, end: 0.95).animate(_animationController);
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-    _animationController.dispose();
-    super.dispose();
-  }
 
   void _togglePasswordVisibility() {
     setState(() {
@@ -63,13 +38,12 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
       _isSignUpButtonEnabled = _emailController.text.contains('@') &&
           _passwordController.text.length >= 6 &&
           _passwordController.text == _confirmPasswordController.text;
-      _passwordMismatchMessage = _passwordController.text != _confirmPasswordController.text ? 'Passwords don’t match' : null;
     });
   }
 
   Future<void> _signUp() async {
     setState(() {
-      _isLoading = true;
+      _isLoading = true; // Show the loader
     });
 
     final String username = _nameController.text;
@@ -77,16 +51,24 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
     final String password = _passwordController.text;
 
     final response = await http.post(
-      Uri.parse('https://angle-hd-selective-sofa.trycloudflare.com/register'),
+      Uri.parse('$BASE_URL/register'), // Adjust the URL as needed
       headers: {'Content-Type': 'application/json'},
       body: json.encode({'username': username, 'email': email, 'password': password}),
     );
 
     setState(() {
-      _isLoading = false;
+      _isLoading = false; // Hide the loader
     });
 
     if (response.statusCode == 201) {
+      final data = json.decode(response.body);
+
+      // Clear any existing session data
+      await _storage.deleteAll();
+
+      // Store new session data
+      await _storage.write(key: 'access_token', value: data['access_token']);
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const GradePage()),
@@ -113,6 +95,23 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _emailController.addListener(_validateForm);
+    _passwordController.addListener(_validateForm);
+    _confirmPasswordController.addListener(_validateForm);
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
@@ -124,10 +123,18 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const SizedBox(height: 50),
+                  // Lottie.network(
+                  //   'https://lottie.host/b3398fd6-7d87-4f2d-9823-6f0c8a659591/d86LTtBMnG.json',
+                  //   height: 200,
+                  // ),
                   const SizedBox(height: 20),
                   const Text(
                     'SIGN UP',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 162, 90, 175),
+                  ),
                   ),
                   const SizedBox(height: 10),
                   const Text(
@@ -193,32 +200,16 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
                       ),
                     ),
                   ),
-                  if (_passwordMismatchMessage != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Text(
-                        _passwordMismatchMessage!,
-                        style: const TextStyle(color: Colors.red),
-                      ),
-                    ),
                   const SizedBox(height: 20),
-                  ScaleTransition(
-                    scale: _animation,
-                    child: ElevatedButton(
-                      onPressed: _isSignUpButtonEnabled
-                          ? () {
-                        _animationController.forward().then((value) {
-                          _animationController.reverse();
-                          _signUp();
-                        });
-                      }
-                          : null,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.teal,
-                        padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 15),
-                        textStyle: const TextStyle(fontSize: 18),
-                      ),
-                      child: const Text('Sign up'),
+                  ElevatedButton(
+                    onPressed: _isSignUpButtonEnabled ? _signUp : null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.teal,
+                      padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 15),
+                      textStyle: const TextStyle(fontSize: 18),
+                    ),
+                    child: const Text('Sign up',
+                    style: TextStyle(color: Colors.white),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -237,9 +228,9 @@ class _SignInState extends State<SignIn> with SingleTickerProviderStateMixin {
             ),
           ),
           if (_isLoading)
-            Scaffold(
-              backgroundColor: Colors.black.withOpacity(0.5),
-              body: Center(
+            Container(
+              color: Colors.black.withOpacity(0.5),
+              child: Center(
                 child: LoadingAnimationWidget.staggeredDotsWave(
                   color: Colors.teal,
                   size: 100,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:system_auth/config.dart';
 import 'package:system_auth/screens/authenticate/log_in.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -42,7 +43,7 @@ class _ForgotPassState extends State<ForgotPass> {
     final String email = _emailController.text;
 
     final response = await http.post(
-      Uri.parse('https://angle-hd-selective-sofa.trycloudflare.com/forgot'), // Adjust the URL as needed
+      Uri.parse('$BASE_URL/forgot'), // Adjust the URL as needed
       headers: {'Content-Type': 'application/json'},
       body: json.encode({ 'email': email}),
     );
@@ -167,7 +168,9 @@ class _ForgotPassState extends State<ForgotPass> {
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                       ),
-                      child: const Text('Send OTP'),
+                      child: const Text('Send OTP',style: TextStyle(color: Colors.white)),
+                      
+                      
                     ),
                   ],
                 ),
