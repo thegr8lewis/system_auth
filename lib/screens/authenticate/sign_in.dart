@@ -71,7 +71,7 @@ class _SignInState extends State<SignIn> {
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const GradePage()),
+        MaterialPageRoute(builder: (context) => const LogIn()),
       );
     } else {
       showDialog(
