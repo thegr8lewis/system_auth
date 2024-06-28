@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:system_auth/config.dart'; // Make sure your BASE_URL is defined here
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:system_auth/screens/authenticate/grade.dart';
 import 'package:system_auth/screens/authenticate/log_in.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -17,9 +21,11 @@ class _SignInState extends State<SignIn> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
 
+  final _storage = const FlutterSecureStorage(); // Initialize the secure storage
+
   bool _obscureText = true;
   bool _isSignUpButtonEnabled = false;
-  bool _isLoading = false; // Add this line
+  bool _isLoading = false;
 
   void _togglePasswordVisibility() {
     setState(() {
@@ -45,7 +51,7 @@ class _SignInState extends State<SignIn> {
     final String password = _passwordController.text;
 
     final response = await http.post(
-      Uri.parse('https://cities-massive-surfing-collectables.trycloudflare.com/register'), // Adjust the URL as needed
+      Uri.parse('$BASE_URL/register'), // Adjust the URL as needed
       headers: {'Content-Type': 'application/json'},
       body: json.encode({'username': username, 'email': email, 'password': password}),
     );
@@ -55,6 +61,14 @@ class _SignInState extends State<SignIn> {
     });
 
     if (response.statusCode == 201) {
+      final data = json.decode(response.body);
+
+      // Clear any existing session data
+      await _storage.deleteAll();
+
+      // Store new session data
+      await _storage.write(key: 'access_token', value: data['access_token']);
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const LogIn()),
@@ -116,7 +130,11 @@ class _SignInState extends State<SignIn> {
                   const SizedBox(height: 20),
                   const Text(
                     'SIGN UP',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 162, 90, 175),
+                  ),
                   ),
                   const SizedBox(height: 10),
                   const Text(
@@ -190,7 +208,9 @@ class _SignInState extends State<SignIn> {
                       padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 15),
                       textStyle: const TextStyle(fontSize: 18),
                     ),
-                    child: const Text('Sign up'),
+                    child: const Text('Sign up',
+                    style: TextStyle(color: Colors.white),
+                    ),
                   ),
                   const SizedBox(height: 20),
                   TextButton(
@@ -208,8 +228,9 @@ class _SignInState extends State<SignIn> {
             ),
           ),
           if (_isLoading)
-            Scaffold(
-              body: Center(
+            Container(
+              color: Colors.black.withOpacity(0.5),
+              child: Center(
                 child: LoadingAnimationWidget.staggeredDotsWave(
                   color: Colors.teal,
                   size: 100,
