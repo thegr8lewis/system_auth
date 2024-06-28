@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       
       // home: SplashScreen(), // Set initial screen here
-      home: Homepage(),
+      home: SplashScreen(),
     );
   }
 }

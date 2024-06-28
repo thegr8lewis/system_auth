@@ -7,6 +7,7 @@ import 'package:system_auth/screens/authenticate/grade.dart';
 import 'package:system_auth/screens/authenticate/sign_in.dart';
 import 'package:system_auth/screens/home/home.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:system_auth/trialpages/apply.dart';
 
 import '../../config.dart';
 
@@ -121,7 +122,7 @@ class _LoginScreenState extends State<LogIn> with SingleTickerProviderStateMixin
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) =>  const HomePage()),
+        MaterialPageRoute(builder: (context) =>  const Homepage()),
       );
     } else {
       showDialog(

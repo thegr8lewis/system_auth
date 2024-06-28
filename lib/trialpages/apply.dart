@@ -18,13 +18,6 @@ class _PamelaState extends State<Homepage> {
   late Future<List<Subject>> _subjectsFuture;
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
-  static const List<Widget> _pages = <Widget>[
-    HomeScreen(),
-    ProfileScreen(),
-    SettingsScreen(),
-    NotificationsScreen(),
-  ];
-
   @override
   void initState() {
     super.initState();
@@ -63,11 +56,26 @@ class _PamelaState extends State<Homepage> {
     });
   }
 
+  static const List<Widget> _pages = <Widget>[
+    Homepage(),
+    ProfileScreen(),
+    SettingsScreen(),
+    NotificationsScreen(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFDF7F2),
-      body: _pages[_selectedIndex],
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: [
+          HomeScreen(subjectsFuture: _subjectsFuture),
+          const ProfileScreen(),
+          const SettingsScreen(),
+          const NotificationsScreen(),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Color(0xFF6200EE),
         items: const <BottomNavigationBarItem>[
@@ -98,7 +106,9 @@ class _PamelaState extends State<Homepage> {
 }
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  final Future<List<Subject>> subjectsFuture;
+
+  const HomeScreen({Key? key, required this.subjectsFuture}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -163,10 +173,9 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 20),
               _buildStatSection(),
               const SizedBox(height: 20),
-              _buildCourseSection(context),
-              const SizedBox(
-                height: 10,
-              ),
+              _buildCourseSection(),
+              const SizedBox(height: 20),
+              _buildSubjectsSection(context),
             ],
           ),
         ),
@@ -246,29 +255,15 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCourseSection(BuildContext context) {
-    return FutureBuilder<List<Subject>>(
-      future: _PamelaState()._fetchSubjects(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text('No subjects available.'));
-        } else {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildSectionTitle('Practice More'),
-              _buildDailyQuizCard(),
-              const SizedBox(height: 20),
-              _buildSectionTitle('Subjects'),
-              _buildSubjectsList(snapshot.data!, context),
-            ],
-          );
-        }
-      },
+  Widget _buildCourseSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSectionTitle('Practice More'),
+        _buildDailyQuizCard(),
+        const SizedBox(height: 20),
+        _buildSectionTitle('Subjects'),
+      ],
     );
   }
 
@@ -343,6 +338,23 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildSubjectsSection(BuildContext context) {
+    return FutureBuilder<List<Subject>>(
+      future: subjectsFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error fetching subjects: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('No subjects available.'));
+        } else {
+          return _buildSubjectsList(snapshot.data!, context);
+        }
+      },
+    );
+  }
+
   Widget _buildSubjectsList(List<Subject> subjects, BuildContext context) {
     return ListView.builder(
       shrinkWrap: true,
@@ -356,8 +368,8 @@ class HomeScreen extends StatelessWidget {
           },
           child: Card(
             child: ListTile(
-              title: Text(subject.name),
-              subtitle: Text(subject.description),
+              title: Text(subject.name ?? 'No name'),
+              subtitle: Text(subject.description ?? 'No description'),
             ),
           ),
         );
@@ -367,15 +379,15 @@ class HomeScreen extends StatelessWidget {
 }
 
 class Subject {
-  final String name;
-  final String description;
+  final String? name;
+  final String? description;
 
-  Subject({required this.name, required this.description});
+  Subject({this.name, this.description});
 
   factory Subject.fromJson(Map<String, dynamic> json) {
     return Subject(
-      name: json['name'],
-      description: json['description'],
+      name: json['name'] as String?,
+      description: json['description'] as String?,
     );
   }
 }
