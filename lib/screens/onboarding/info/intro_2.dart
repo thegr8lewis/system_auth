@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class IntroPage2 extends StatelessWidget {
   @override
@@ -22,21 +23,26 @@ class IntroPage2 extends StatelessWidget {
                 // Title
                 Text(
                   'Thousands of Questions',
-                  style: TextStyle(
+                  style: GoogleFonts.poppins(
+                  textStyle: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Colors.brown[800],
                   ),
+                ),
                 ),
                 SizedBox(height: 20),
                 // Subtitle
                 Text(
                   ' Access a vast collection of questions tailored for junior school students across various subjects',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: GoogleFonts.poppins(
+                  textStyle: TextStyle(
                     fontSize: 20,
-                    color: Colors.blueGrey,
+                  
+                    color: Colors.brown[800],
                   ),
+                ),
                 ),
                 SizedBox(height: 40),
                 // Description

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class IntroPage3 extends StatelessWidget {
   @override
@@ -17,12 +18,16 @@ class IntroPage3 extends StatelessWidget {
                   width: 200,
                   height: 200,
                 ),
-                Text(
-                  'Instant Answers & Detailed Explanations',
-                  style: TextStyle(
+                Center(
+                  child: Text(
+                    'Instant Answers & Detailed Explanations',
+                    style: GoogleFonts.poppins(
+                  textStyle: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Colors.brown[800],
+                  ),
+                ),
                   ),
                 ),
                 SizedBox(height: 20),
@@ -30,10 +35,13 @@ class IntroPage3 extends StatelessWidget {
                 Text(
                   'Get instant answers with detailed explanations to help you understand better and learn faster',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: Colors.blueGrey,
+                  style: GoogleFonts.poppins(
+                  textStyle: TextStyle(
+                    fontSize: 20,
+                    
+                    color: Colors.brown[800],
                   ),
+                ),
                 ),
                 SizedBox(height: 40),
                 // Description

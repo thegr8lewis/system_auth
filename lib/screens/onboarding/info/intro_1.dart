@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class IntroPage1 extends StatelessWidget {
   @override
@@ -22,20 +23,25 @@ class IntroPage1 extends StatelessWidget {
                 // Title
                 Text(
                   'Welcome To Soma App',
-                  style: TextStyle(
+                  style: GoogleFonts.poppins(
+                  textStyle: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Colors.brown[800],
                   ),
+                ),
                 ),
                 SizedBox(height: 20),
                 // Subtitle
                 Text(
                   'Unlock the world of knowledge and excel in your studies with Soma App',
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: Colors.blueGrey,
+                 style: GoogleFonts.poppins(
+                  textStyle: TextStyle(
+                    fontSize: 20,
+                   
+                    color: Colors.brown[800],
                   ),
+                ),
                 ),
                 SizedBox(height: 40),
                 // Description

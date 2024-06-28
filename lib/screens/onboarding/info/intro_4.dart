@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class IntroPage4 extends StatelessWidget {
   @override
@@ -20,10 +21,12 @@ class IntroPage4 extends StatelessWidget {
                 Text(
                   'Track Your Progress',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
+                  style: GoogleFonts.poppins(
+                    textStyle: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.brown[800],
+                    ),
                   ),
                 ),
                 SizedBox(height: 20),
@@ -41,9 +44,11 @@ class IntroPage4 extends StatelessWidget {
                 Text(
                   'Join groups and communities to see events, share tasks, and collaborate with others. Connect with friends, family, and colleagues.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: Colors.blueGrey,
+                  style: GoogleFonts.poppins(
+                    textStyle: TextStyle(
+                      fontSize: 20,
+                      color: Colors.brown[800],
+                    ),
                   ),
                 ),
               ],

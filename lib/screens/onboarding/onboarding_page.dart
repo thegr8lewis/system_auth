@@ -99,7 +99,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       count: 5,
                       effect: ExpandingDotsEffect(
                         dotColor: Colors.grey,
-                        activeDotColor: Theme.of(context).colorScheme.primary,
+                        activeDotColor: Colors.brown,
                         dotHeight: 12,
                         dotWidth: 12,
                         spacing: 8,

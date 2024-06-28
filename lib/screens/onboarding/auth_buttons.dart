@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AuthButtonPrimary extends StatelessWidget {
   final String text;
@@ -16,7 +17,13 @@ class AuthButtonPrimary extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: onPressed,
-      child: Text(text),
+      child: Text(text,style: GoogleFonts.poppins(
+                  textStyle: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.brown[800],
+                  ),
+                ),),
       style: ButtonStyle(
         elevation: MaterialStateProperty.all(0),
         backgroundColor:
@@ -49,7 +56,13 @@ class AuthButtonSecondary extends StatelessWidget {
   Widget build(BuildContext context) {
     return OutlinedButton(
       onPressed: onPressed,
-      child: Text(text),
+      child: Text(text,style: GoogleFonts.poppins(
+                  textStyle: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.brown[800],
+                  ),
+                ),),
       style: ButtonStyle(
         padding: MaterialStateProperty.all(padding),
         shape: MaterialStateProperty.all(

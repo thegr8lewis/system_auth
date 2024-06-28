@@ -173,151 +173,153 @@ class _LoginScreenState extends State<LogIn> with SingleTickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 50),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'LOG IN',
-                    // style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold,fontFamily: 'Lexus'),
-                    style: TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
-                    color: Color.fromARGB(255, 162, 90, 175),
-                  ),
-                  ),
-                  const SizedBox(height: 10),
-                  const Text(
-                    'Enter your email and Password',
-                    style: TextStyle(fontSize: 16, color: Colors.grey,fontFamily: 'Lexus'),
-                  ),
-                  const SizedBox(height: 30),
-                  TextField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.email),
-                      labelText: 'Email',
-                      hintText: 'xyz123@mail.com',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+      body: SingleChildScrollView(
+        child: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 50),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'LOG IN',
+                      // style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold,fontFamily: 'Lexus'),
+                      style: TextStyle(
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 162, 90, 175),
+                    ),
+                    ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      'Enter your email and Password',
+                      style: TextStyle(fontSize: 16, color: Colors.grey,fontFamily: 'Lexus'),
+                    ),
+                    const SizedBox(height: 30),
+                    TextField(
+                      controller: _emailController,
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.email),
+                        labelText: 'Email',
+                        hintText: 'xyz123@mail.com',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  TextField(
-                    controller: _passwordController,
-                    obscureText: _obscureText,
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.lock),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscureText ? Icons.visibility_outlined : Icons.visibility_off,
+                    const SizedBox(height: 20),
+                    TextField(
+                      controller: _passwordController,
+                      obscureText: _obscureText,
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.lock),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscureText ? Icons.visibility_outlined : Icons.visibility_off,
+                          ),
+                          onPressed: _togglePasswordVisibility,
                         ),
-                        onPressed: _togglePasswordVisibility,
-                      ),
-                      labelText: 'Password',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        labelText: 'Password',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          ValueListenableBuilder<bool>(
-                            valueListenable: _isButtonEnabled,
-                            builder: (context, value, child) {
-                              return Switch(
-                                value: _rememberMe,
-                                onChanged: value
-                                    ? (bool newValue) {
-                                  setState(() {
-                                    _rememberMe = newValue;
-                                  });
-                                }
-                                    : null,
-                                activeColor: Colors.teal,
-                              );
-                            },
-                          ),
-                          const Text('Remember me'),
-                        ],
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const ForgotPass()),
-                          );
-                        },
-                        child: const Text(
-                          'Forgot password?',
-                          style: TextStyle(color: Colors.red),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            ValueListenableBuilder<bool>(
+                              valueListenable: _isButtonEnabled,
+                              builder: (context, value, child) {
+                                return Switch(
+                                  value: _rememberMe,
+                                  onChanged: value
+                                      ? (bool newValue) {
+                                    setState(() {
+                                      _rememberMe = newValue;
+                                    });
+                                  }
+                                      : null,
+                                  activeColor: Colors.teal,
+                                );
+                              },
+                            ),
+                            const Text('Remember me'),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  ValueListenableBuilder<bool>(
-                    valueListenable: _isButtonEnabled,
-                    builder: (context, value, child) {
-                      return ScaleTransition(
-                        scale: _animation,
-                        child: ElevatedButton(
-                          onPressed: value
-                              ? () {
-                            _animationController.forward().then((_) {
-                              _animationController.reverse();
-                              _login();
-                            });
-                          }
-                              : null,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.teal,
-                            padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 15),
-                            textStyle: const TextStyle(fontSize: 18),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const ForgotPass()),
+                            );
+                          },
+                          child: const Text(
+                            'Forgot password?',
+                            style: TextStyle(color: Colors.red),
                           ),
-                          child: const Text('Login',style: 
-                          TextStyle(color: Colors.white),),
                         ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const SignIn()),
-                      );
-                    },
-                    child: const Text('Sign up'),
-                  ),
-                  const SizedBox(height: 20),
-                ],
-              ),
-            ),
-          ),
-          if (_isLoading)
-            Scaffold(
-              backgroundColor: Colors.black.withOpacity(0.5),
-              body: Center(
-                child: LoadingAnimationWidget.staggeredDotsWave(
-                  color: Colors.teal,
-                  size: 100,
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    ValueListenableBuilder<bool>(
+                      valueListenable: _isButtonEnabled,
+                      builder: (context, value, child) {
+                        return ScaleTransition(
+                          scale: _animation,
+                          child: ElevatedButton(
+                            onPressed: value
+                                ? () {
+                              _animationController.forward().then((_) {
+                                _animationController.reverse();
+                                _login();
+                              });
+                            }
+                                : null,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.teal,
+                              padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 15),
+                              textStyle: const TextStyle(fontSize: 18),
+                            ),
+                            child: const Text('Login',style: 
+                            TextStyle(color: Colors.white),),
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const SignIn()),
+                        );
+                      },
+                      child: const Text('Sign up'),
+                    ),
+                    const SizedBox(height: 20),
+                  ],
                 ),
               ),
             ),
-        ],
+            if (_isLoading)
+              Scaffold(
+                backgroundColor: Colors.black.withOpacity(0.5),
+                body: Center(
+                  child: LoadingAnimationWidget.staggeredDotsWave(
+                    color: Colors.teal,
+                    size: 100,
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

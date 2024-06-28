@@ -11,7 +11,7 @@ class CustomBackButton extends StatelessWidget {
       icon: Icon(
         Icons.arrow_back_ios,
         size: 24,
-        color: Theme.of(context).iconTheme.color,
+        color: Colors.brown,
       ),
       onPressed: onPressed ?? () => Navigator.of(context).pop(),
     );
