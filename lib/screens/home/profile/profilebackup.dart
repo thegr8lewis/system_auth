@@ -8,14 +8,14 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../../config.dart';
 
-class UserProfile extends StatefulWidget {
-  const UserProfile({super.key});
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
 
   @override
-  State<UserProfile> createState() => _UserProfileState();
+  State<ProfilePage> createState() => _ProfilePageState();
 }
 
-class _UserProfileState extends State<UserProfile> {
+class _ProfilePageState extends State<ProfilePage> {
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   String? _name;
@@ -90,7 +90,7 @@ class _UserProfileState extends State<UserProfile> {
       Navigator.pop(context);
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const UserProfile()),
+        MaterialPageRoute(builder: (context) => const ProfilePage()),
       );
     } else {
       setState(() {
@@ -306,59 +306,65 @@ class _UserProfileState extends State<UserProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade300,
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.blueAccent,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
+          color: Colors.white, // Change icon color to white
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) =>  HomePage()),
+              MaterialPageRoute(builder: (context) => const HomePage()),
             );
           },
         ),
-        title: const Text(' Profile'),
+        title: const Text(
+          'Your Profile',
+          style: TextStyle(
+            color: Colors.white, // Change text color to white
+          ),
+        ),
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(.0),
+        padding: const EdgeInsets.all(0.0), // Adjust padding as needed
         child: _isLoading
             ? const Center(child: CircularProgressIndicator())
             : Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Stack(
-            children: [
-              Container(
-                height: 300,
-                decoration: const BoxDecoration(
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(20),
-                    bottomRight: Radius.circular(20),
-                  ),
-                ),
-              ),
-              if (_hasError)
-                Positioned(
-                  top: 16,
-                  left: 0,
-                  right: 0,
-                  child: Center(
-                    child: Container(
-                      // color: Colors.white.withOpacity(0.8), // Semi-transparent background
-                      padding: const EdgeInsets.all(8),
-                      child: Text(
-                        _errorMessage,
-                        style: const TextStyle(
-                          color: Colors.red,
-                          fontSize: 16,
-                        ),
-                      ),
+              children: [
+                Container(
+                  height: 300,
+                  decoration: const BoxDecoration(
+                    color: Colors.blueAccent,
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(20),
+                      bottomRight: Radius.circular(20),
                     ),
                   ),
                 ),
-            const SizedBox(height: 16),
-
+                // if (_hasError)
+                //   Positioned(
+                //     top: 16,
+                //     left: 0,
+                //     right: 0,
+                //     child: Center(
+                //       child: Container(
+                //         padding: const EdgeInsets.all(8),
+                //         child: Text(
+                //           _errorMessage,
+                //           style: const TextStyle(
+                //             color: Colors.red,
+                //             fontSize: 16,
+                //           ),
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // const SizedBox(height: 16),
                 Column(
                   children: [
                     const SizedBox(height: 60),
@@ -413,79 +419,148 @@ class _UserProfileState extends State<UserProfile> {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height:8),
             const Spacer(),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _showUpdateDialog,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+              padding: const EdgeInsets.all(20.0), // Adjust padding as needed
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.person_outline),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            _name ?? 'Lewis Momanyi',
+                            style: const TextStyle(
+                              fontSize: 24,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Tooltip(
+                        message: 'Edit profile', // Tooltip message to display
+                        child: IconButton(
+                          icon: const Icon(Icons.edit_note_rounded),
+                          onPressed: _showUpdateDialog,
+                        ),
+                      )
+
+                    ],
                   ),
-                  child: const Text(
-                    'Update Details',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.school_outlined),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            _grade != null ? 'Grade: $_grade' : 'Grade X',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.grey.shade700,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Tooltip(
+                        message: 'Edit Profile', // Tooltip message to display
+                        child: IconButton(
+                          icon: Icon(Icons.edit_note_rounded),
+                          onPressed: _showUpdateDialog,
+                        ),
+                      )
+
+                    ],
                   ),
-                ),
+                  const SizedBox(height: 170),
+                ],
               ),
             ),
-            const SizedBox(height: 8),
+
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
+                child: TextButton(
                   onPressed: _logOut,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.redAccent,
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.green[400],
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: const Text(
-                    'Log Out',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.logout, // Icon for logout
+                        color: Colors.white, // Color of the icon
+                      ),
+                      SizedBox(width: 8), // SizedBox for spacing between icon and text
+                      Text(
+                        'Log Out',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16, // Adjust font size as needed
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
+
+
             const SizedBox(height: 8),
+
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
+                child: TextButton(
                   onPressed: _showDeleteConfirmationDialog,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blueAccent,
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.red[400],
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: const Text(
-                    'Delete Profile',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.delete, // Icon for delete
+                        color: Colors.white, // Color of the icon
+                      ),
+                      SizedBox(width: 8), // SizedBox for spacing between icon and text
+                      Text(
+                        'Delete Profile',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16, // Adjust font size as needed
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
+
           ],
         ),
       ),
     );
   }
+
 }

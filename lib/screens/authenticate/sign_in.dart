@@ -7,6 +7,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:system_auth/screens/authenticate/grade.dart';
 import 'package:system_auth/screens/authenticate/log_in.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:system_auth/screens/home/home.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({Key? key}) : super(key: key);
@@ -71,7 +72,7 @@ class _SignInState extends State<SignIn> {
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const GradePage()),
+        MaterialPageRoute(builder: (context) => const LogIn()),
       );
     } else {
       showDialog(
