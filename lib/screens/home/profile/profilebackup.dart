@@ -306,9 +306,9 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade300,
+      backgroundColor: Colors.grey,
       appBar: AppBar(
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: const Color(0xFF00072D),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           color: Colors.white, // Change icon color to white
@@ -320,7 +320,7 @@ class _ProfilePageState extends State<ProfilePage> {
           },
         ),
         title: const Text(
-          'Your Profile',
+          'Profile',
           style: TextStyle(
             color: Colors.white, // Change text color to white
           ),
@@ -339,7 +339,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Container(
                   height: 300,
                   decoration: const BoxDecoration(
-                    color: Colors.blueAccent,
+                    color: Color(0xFF00072D),
                     borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(20),
                       bottomRight: Radius.circular(20),
@@ -388,8 +388,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: Text(
                         _name ?? 'Loading...',
                         style: const TextStyle(
-                          fontSize: 24,
+                          fontSize: 30,
                           fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
                       ),
                     ),
@@ -399,9 +400,9 @@ class _ProfilePageState extends State<ProfilePage> {
                         children: [
                           Text(
                             _grade != null ? 'Grade: $_grade' : 'Loading...',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.grey.shade700,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
                             ),
                           ),
                           if (_updateErrorMessage.isNotEmpty)
@@ -428,13 +429,13 @@ class _ProfilePageState extends State<ProfilePage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.person_outline),
+                      const Icon(Icons.person),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            _name ?? 'Lewis Momanyi',
+                            _name ?? 'Name',
                             style: const TextStyle(
                               fontSize: 24,
                             ),
@@ -456,16 +457,16 @@ class _ProfilePageState extends State<ProfilePage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.school_outlined),
+                      const Icon(Icons.school),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            _grade != null ? 'Grade: $_grade' : 'Grade X',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.grey.shade700,
+                            _grade != null ? 'Grade: $_grade' : 'Grade',
+                            style: const TextStyle(
+                              fontSize: 24,
+                              color: Colors.black,
                             ),
                           ),
                         ),
@@ -474,7 +475,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       Tooltip(
                         message: 'Edit Profile', // Tooltip message to display
                         child: IconButton(
-                          icon: Icon(Icons.edit_note_rounded),
+                          icon: const Icon(Icons.edit_note_rounded),
                           onPressed: _showUpdateDialog,
                         ),
                       )
@@ -493,7 +494,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: TextButton(
                   onPressed: _logOut,
                   style: TextButton.styleFrom(
-                    backgroundColor: Colors.green[400],
+                    backgroundColor: Colors.green[900],
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -530,7 +531,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: TextButton(
                   onPressed: _showDeleteConfirmationDialog,
                   style: TextButton.styleFrom(
-                    backgroundColor: Colors.red[400],
+                    backgroundColor: Colors.red[900],
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),

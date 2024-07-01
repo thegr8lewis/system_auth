@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:lottie/lottie.dart';
 import 'package:system_auth/config.dart';
+import 'package:system_auth/screens/home/profile/profilebackup.dart';
 import 'package:system_auth/screens/home/topics.dart';
 import 'package:system_auth/screens/home/profile/userprofile.dart';
 
@@ -82,7 +83,7 @@ class _HomePageState extends State<HomePage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const UserProfile(),
+                  builder: (context) => const ProfilePage(),
                 ),
               );
             },

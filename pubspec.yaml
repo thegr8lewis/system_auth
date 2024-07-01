@@ -42,6 +42,9 @@ flutter:
 
   assets:
     - assets/.env
+    - assets/soma.png
+
+
   # Uncomment and add fonts if needed
   # fonts:
   #   - family: Schyler

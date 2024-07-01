@@ -101,91 +101,118 @@ class _ForgotPassState extends State<ForgotPass> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 36.0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20.0),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 10.0,
-                      offset: Offset(0, 10),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'Forgot Password!',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buildOptionButton('Email ID', isEmailSelected),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Enter the Registered Mail ID to get OTP',
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    TextField(
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.email),
-                        hintText: 'Email',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    ElevatedButton(
-                      onPressed: isButtonEnabled ? _sendOTP : null,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF00796B),
-                        padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                      ),
-                      child: const Text('Send OTP'),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          if (_isLoading)
-            Scaffold(
-              body: Center(
-                child: LoadingAnimationWidget.staggeredDotsWave(
-                  color: const Color(0xFF00796B),
-                  size: 100,
-                ),
-              ),
-            ),
-        ],
+      appBar: AppBar(
+        backgroundColor:const Color(0xFF00072D),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back,color: Colors.white),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const LogIn()),
+            );
+          },
+        ),
       ),
+     body: Container(
+       color: const Color(0xFF00072D),
+       child: Stack(
+         children: [
+           Center(
+             child: Padding(
+               padding: const EdgeInsets.all(16.0),
+               child: Container(
+                 padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 36.0),
+                 decoration: BoxDecoration(
+                   color: const Color(0xFF00072D),
+                   borderRadius: BorderRadius.circular(20.0),
+                   boxShadow: const [
+                     BoxShadow(
+                       color: Colors.black26,
+                       blurRadius: 10.0,
+                       offset: Offset(0, 10),
+                     ),
+                   ],
+                 ),
+                 child: Column(
+                   mainAxisSize: MainAxisSize.min,
+                   crossAxisAlignment: CrossAxisAlignment.center,
+                   children: [
+                     const Text(
+                       'Forgot Password!',
+                       style: TextStyle(
+                         fontSize: 24,
+                         fontWeight: FontWeight.bold,
+                         color: Colors.white,
+                       ),
+                     ),
+                     const SizedBox(height: 16),
+                     Row(
+                       mainAxisAlignment: MainAxisAlignment.center,
+                       children: [
+                         _buildOptionButton('Email ID', isEmailSelected),
+                       ],
+                     ),
+                     const SizedBox(height: 16),
+                     const Align(
+                       alignment: Alignment.centerLeft,
+                       child: Text(
+                         'Enter the Registered Mail ID to get OTP',
+                         style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.white,),
+                       ),
+                     ),
+                     const SizedBox(height: 8),
+                     TextField(
+                       controller: _emailController,
+                       style: TextStyle(color: Colors.white),
+                       keyboardType: TextInputType.emailAddress,
+                       decoration: InputDecoration(
+                         prefixIcon: Icon(Icons.email, color: Colors.white),
+                         hintText: 'Email',
+                         hintStyle: const TextStyle(color: Colors.white),
+                         border: OutlineInputBorder(
+                           borderRadius: BorderRadius.circular(10.0),
+                         ),
+                         focusedBorder: OutlineInputBorder(
+                           borderSide: const BorderSide(color: Colors.green),
+                           borderRadius: BorderRadius.circular(10),
+                         ),
+                       ),
+                     ),
+                     const SizedBox(height: 24),
+                     ElevatedButton(
+                       onPressed: isButtonEnabled ? _sendOTP : null,
+                       style: ElevatedButton.styleFrom(
+                         backgroundColor: Colors.green[500],
+                         padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 16),
+                         shape: RoundedRectangleBorder(
+                           borderRadius: BorderRadius.circular(10.0),
+                         ),
+                       ),
+                       child: const Text('Send OTP',
+                         style: TextStyle(
+                           fontSize: 16,
+                           color: Colors.white, // Grey color for the text
+                         ),
+                       ),
+                     ),
+                   ],
+                 ),
+               ),
+             ),
+           ),
+           if (_isLoading)
+             Scaffold(
+               backgroundColor: Colors.black.withOpacity(0.5),
+               body: Center(
+                 child: LoadingAnimationWidget.staggeredDotsWave(
+                   color: const Color(0xFF00796B),
+                   size: 100,
+                 ),
+               ),
+             ),
+         ],
+       ),
+     ),
     );
   }
 

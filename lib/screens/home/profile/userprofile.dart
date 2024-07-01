@@ -313,179 +313,182 @@ class _UserProfileState extends State<UserProfile> {
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) =>  HomePage()),
+              MaterialPageRoute(builder: (context) => const HomePage()),
             );
           },
         ),
-        title: const Text(' Profile'),
+        title: const Text('Profile'),
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(.0),
+        padding: const EdgeInsets.all(0.0),
         child: _isLoading
             ? const Center(child: CircularProgressIndicator())
-            : Column(
-          children: [
-            Stack(
+            : SingleChildScrollView(
+          child: Column(
             children: [
-              Container(
-                height: 300,
-                decoration: const BoxDecoration(
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(20),
-                    bottomRight: Radius.circular(20),
-                  ),
-                ),
-              ),
-              if (_hasError)
-                Positioned(
-                  top: 16,
-                  left: 0,
-                  right: 0,
-                  child: Center(
-                    child: Container(
-                      // color: Colors.white.withOpacity(0.8), // Semi-transparent background
-                      padding: const EdgeInsets.all(8),
-                      child: Text(
-                        _errorMessage,
-                        style: const TextStyle(
-                          color: Colors.red,
-                          fontSize: 16,
-                        ),
+              Stack(
+                children: [
+                  Container(
+                    height: 300,
+                    decoration: const BoxDecoration(
+                      color: Colors.blue,
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(20),
+                        bottomRight: Radius.circular(20),
                       ),
                     ),
                   ),
-                ),
-            const SizedBox(height: 16),
-
-                Column(
-                  children: [
-                    const SizedBox(height: 60),
-                    Center(
-                      child: CircleAvatar(
-                        radius: 60,
-                        backgroundColor: Colors.grey.shade200,
-                        child: _profileImageUrl != null
-                            ? Text(
-                          _name?.substring(0, 2).toUpperCase() ?? '',
+                  if (_hasError)
+                    Positioned(
+                      top: 16,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          child: Text(
+                            _errorMessage,
+                            style: const TextStyle(
+                              color: Colors.red,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  const SizedBox(height: 16),
+                  Column(
+                    children: [
+                      const SizedBox(height: 60),
+                      Center(
+                        child: CircleAvatar(
+                          radius: 60,
+                          backgroundColor: Colors.grey.shade200,
+                          child: _profileImageUrl != null
+                              ? Text(
+                            _name?.substring(0, 2).toUpperCase() ?? '',
+                            style: const TextStyle(
+                              fontSize: 40,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
+                              : null,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Center(
+                        child: Text(
+                          _name ?? 'Loading...',
                           style: const TextStyle(
-                            fontSize: 40,
+                            fontSize: 24,
                             fontWeight: FontWeight.bold,
                           ),
-                        )
-                            : null,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Center(
-                      child: Text(
-                        _name ?? 'Loading...',
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    Center(
-                      child: Column(
-                        children: [
-                          Text(
-                            _grade != null ? 'Grade: $_grade' : 'Loading...',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.grey.shade700,
-                            ),
-                          ),
-                          if (_updateErrorMessage.isNotEmpty)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: Text(
-                                _updateErrorMessage,
-                                style: const TextStyle(color: Colors.red),
+                      const SizedBox(height: 8),
+                      Center(
+                        child: Column(
+                          children: [
+                            Text(
+                              _grade != null
+                                  ? 'Grade: $_grade'
+                                  : 'Loading...',
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.grey.shade700,
                               ),
                             ),
-                        ],
+                            if (_updateErrorMessage.isNotEmpty)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Text(
+                                  _updateErrorMessage,
+                                  style: const TextStyle(color: Colors.red),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              const Spacer(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _showUpdateDialog,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            const Spacer(),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _showUpdateDialog,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text(
-                    'Update Details',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+                    child: const Text(
+                      'Update Details',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _logOut,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.redAccent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+              const SizedBox(height: 8),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _logOut,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.redAccent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
-                  ),
-                  child: const Text(
-                    'Log Out',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _showDeleteConfirmationDialog,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blueAccent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text(
-                    'Delete Profile',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+                    child: const Text(
+                      'Log Out',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+              const SizedBox(height: 8),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _showDeleteConfirmationDialog,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blueAccent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text(
+                      'Delete Profile',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
+
 }
